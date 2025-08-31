@@ -21,17 +21,6 @@ public class ClassParser
             throw new ApplicationException("Need data to parse properly");
         }
 
-        // var classDefinitions = lines.Where(x => x.Contains("class")).ToArray();
-
-        // if (classDefinitions != null)
-        // {
-        //     var firstClass = classDefinitions[0];
-        //     var firstLine = FilterLine(firstClass);
-
-        //     var className = firstLine[1];
-        //     result += $"{typeScriptClass} {className}";
-        // }
-
         var properties = new List<string>();
         var nestedProperty = new List<string>();
         var inFirstProperty = false;
@@ -103,7 +92,56 @@ public class ClassParser
         foreach (var prop in properties)
         {
             var split = prop.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            result += $"\t{split[1]}:{split[0].ToLower()};\n";
+
+            var nullable = split[0].Contains('?');
+            var isList = split[0].Contains("List"); 
+            var typeName = ProcessTypeName(split[0], nullable, isList);
+
+            //Lower case the first character of the name
+            var lowerName = char.ToLower(split[1][0]) + split[1].Substring(1);
+            if (nullable)
+            {
+                lowerName += nullable;
+            }
+            result += $"\t{lowerName}: {typeName};\n";
+        }
+
+        return result;
+    }
+
+    private string ProcessTypeName(string type, bool nullable, bool isList)
+    {
+        var result = "";
+
+        if (isList)
+        {
+            var startIndex = type.IndexOf('<') + 1;
+            var endIndex = type.IndexOf('>');
+            var className = type.Substring(startIndex, endIndex - startIndex);
+            result = $"{className}[]";
+        }
+        else
+        {
+
+            var filteredType = nullable ? type.Trim('?') : type;
+            switch (filteredType.ToLower())
+            {
+                case "int":
+                case "long":
+                    {
+                        result = "number";
+                        break;
+                    }
+                case "string":
+                    {
+                        result = "string";
+                        break;
+                    }
+                    default:
+                    {
+                        throw new ApplicationException("Not a valid type to parse");
+                    }
+            }
         }
 
         return result;

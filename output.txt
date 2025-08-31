@@ -1,6 +1,6 @@
 export interface PersonDto {
-	Name:string;
-	Age:int;
-	Gender:string;
-	DriverLicenceNumber:long?;
-	Addresses:list<address>;
+	name: string;
+	age: number;
+	gender: string;
+	driverLicenceNumberTrue: number;
+	addresses: Address[];
