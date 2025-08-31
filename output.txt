@@ -5,3 +5,9 @@ export interface PersonDto {
 	driverLicenceNumber?: number;
 	addresses: Address[];
 }
+export interface Address {
+	streetNumber: number;
+	streetName: string;
+	suburb: string;
+	postCode: number;
+}

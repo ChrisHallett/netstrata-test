@@ -23,6 +23,8 @@ public class ClassParser
         var nestedProperty = new List<string>();
         var inFirstProperty = false;
         var inSecondProperty = false;
+        var processedSecondProperty = false;
+        var numberOfClasses = lines.Where(x => x.Contains("class")).ToArray();
 
         foreach (var line in lines)
         {
@@ -36,15 +38,18 @@ public class ClassParser
                     inFirstProperty = false;
                     result += processedProps;
                     result += "}";
+
+                    if (numberOfClasses.Count() > 1)
+                    {
+                        //Start second class
+                        result += $"\n{SetUpClassName(line)}";
+                    }
                 }
-                else
+                else if (!inSecondProperty)
                 {
                     inFirstProperty = true;
-                    var filteredString = FilterLine(line);
-                    var split = filteredString.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                    result += $"{typeScriptClass} {split[1]} {{\n";
-                }                
+                    result += SetUpClassName(line);
+                }
             }
             else if (line == "{")
             {
@@ -54,17 +59,13 @@ public class ClassParser
             else if (line == "}")
             {
                 //Close the property
-                // if (inFirstProperty)
-                // {
-
-                // }
-                // else
-                // {
-                //     if (inSecondProperty)
-                //     {
-                //     }
-                // }
-                continue;
+                if (inSecondProperty && !processedSecondProperty)
+                {
+                    var processedNestedProps = ProcessProperties(nestedProperty);
+                    result += processedNestedProps;
+                    result += "}";
+                    processedSecondProperty = true;
+                }
             }
             else
             {
@@ -82,6 +83,14 @@ public class ClassParser
         }
 
         return result;
+    }
+
+    private string SetUpClassName(string line)
+    {
+        var filteredString = FilterLine(line);
+        var split = filteredString.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        return $"{typeScriptClass} {split[1]} {{\n";
     }
 
     private string ProcessProperties(List<string> properties)
