@@ -25,10 +25,13 @@ class Program
 
         var parsedClass = Parser.ParseClass(lines);
 
-        string binFolder = AppContext.BaseDirectory; 
-        string projectRoot = Path.GetFullPath(Path.Combine(binFolder, @"..\..\..")); 
+        string binFolder = AppContext.BaseDirectory;
+        string projectRoot = Path.GetFullPath(Path.Combine(binFolder, @"..\..\.."));
 
         string filePath = Path.Combine(projectRoot, "output.txt");
         File.WriteAllText(filePath, parsedClass);
+
+        Console.WriteLine("Parsed Class:");
+        Console.WriteLine(parsedClass);
     }
 }
