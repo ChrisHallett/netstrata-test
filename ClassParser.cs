@@ -59,7 +59,14 @@ public class ClassParser
             else if (line == "}")
             {
                 //Close the property
-                if (inSecondProperty && !processedSecondProperty)
+                if (inFirstProperty && numberOfClasses.Count() == 1)
+                {
+                    var processedProps = ProcessProperties(properties);
+                    inFirstProperty = false;
+                    result += processedProps;
+                    result += "}";
+                }
+                else if (inSecondProperty && !processedSecondProperty)
                 {
                     var processedNestedProps = ProcessProperties(nestedProperty);
                     result += processedNestedProps;
