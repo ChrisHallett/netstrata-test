@@ -1,6 +1,4 @@
 
-using Microsoft.VisualBasic;
-
 public class ClassParser
 {
     private string GetSetFilter = "{ get; set; }";
@@ -37,6 +35,7 @@ public class ClassParser
                     inSecondProperty = true;
                     inFirstProperty = false;
                     result += processedProps;
+                    result += "}";
                 }
                 else
                 {
@@ -101,7 +100,7 @@ public class ClassParser
             var lowerName = char.ToLower(split[1][0]) + split[1].Substring(1);
             if (nullable)
             {
-                lowerName += nullable;
+                lowerName += '?';
             }
             result += $"\t{lowerName}: {typeName};\n";
         }

@@ -2,5 +2,6 @@ export interface PersonDto {
 	name: string;
 	age: number;
 	gender: string;
-	driverLicenceNumberTrue: number;
+	driverLicenceNumber?: number;
 	addresses: Address[];
+}
